@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consulta de pendências</title>
+<style>
+  :root { --azul:#2f4672; --texto:#1b1f27; --fundo:#f3f5f9; --vermelho:#e0001b; --linha:#c9ced8; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px 16px; background:var(--fundo); color:var(--texto);
+         font-family: "Segoe UI", Arial, sans-serif; }
+  main { max-width:1000px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin:0 0 16px; }
+  label { display:block; font-weight:600; margin-bottom:6px; }
+  select { font:inherit; padding:10px 12px; min-width:280px; max-width:100%; border:2px solid var(--azul);
+           border-radius:6px; background:#fff; }
+  select:focus-visible { outline:3px solid #8fb0ee; outline-offset:2px; }
+  .vazio { margin:24px 0; color:#566; }
+  .rolagem { overflow-x:auto; margin-top:20px; }
+  table { border-collapse:collapse; width:100%; min-width:720px; background:#fff; }
+  th, td { border:1px solid var(--linha); text-align:center; padding:0; }
+  thead th { background:var(--azul); color:#fff; font-weight:700; }
+  thead tr:first-child th { padding:10px; font-size:1.05rem; }
+  thead tr:nth-child(2) th { font-size:.95rem; }
+  th a { display:block; padding:10px 6px; color:#fff; text-decoration:none; }
+  th a:hover, th a:focus-visible { background:#3f5a8f; text-decoration:underline; }
+  td.nome { padding:12px; text-align:left; font-weight:600; }
+  td a { display:block; padding:12px 6px; text-decoration:none; font-weight:700; font-size:1.05rem; color:#000; }
+  td a:hover, td a:focus-visible { background:#e8edf7; text-decoration:underline; }
+  td a.ruim { color:var(--vermelho); }
+  .guia { background:#fff; border:1px solid var(--linha); border-left:5px solid var(--azul); border-radius:6px;
+          padding:14px 18px; margin:0 0 22px; line-height:1.5; }
+  .guia h2 { font-size:1.05rem; margin:0 0 8px; }
+  .guia ul { margin:0; padding-left:20px; }
+  .guia li { margin-bottom:6px; }
+  .tag { font-weight:700; }
+  .tag.ruim { color:var(--vermelho); }
+  .conf { background:#fff; border:1px solid var(--linha); border-radius:6px; padding:16px 18px; margin-top:20px; }
+  .conf label { display:flex; gap:10px; align-items:flex-start; font-weight:400; margin:0 0 12px; cursor:pointer; }
+  .conf input[type=checkbox] { width:20px; height:20px; margin-top:2px; flex:none; }
+  button { font:inherit; font-weight:600; padding:10px 20px; border:0; border-radius:6px; background:var(--azul);
+           color:#fff; cursor:pointer; }
+  button:disabled { background:#9aa5bd; cursor:not-allowed; }
+  button:focus-visible { outline:3px solid #8fb0ee; outline-offset:2px; }
+  #msg { margin:12px 0 0; font-weight:600; }
+  #msg.ok { color:#1d6b32; } #msg.erro { color:var(--vermelho); }
+  .linha-sel { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; background:#fff; border:1px solid var(--linha);
+               border-radius:6px; padding:16px 18px; }
+  .linha-sel .ciente { display:flex; gap:10px; align-items:flex-start; font-weight:400; margin:0; cursor:pointer;
+                       flex:1 1 260px; max-width:420px; }
+  .linha-sel input[type=checkbox] { width:20px; height:20px; margin-top:2px; flex:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Consulta de pendências</h1>
+  <section class="guia" aria-labelledby="guia-t">
+    <h2 id="guia-t">Como ler a sua situação</h2>
+    <ul>
+      <li><span class="tag">OK / OK+</span>: Atividade concluída e aprovada. Não é necessário realizar nenhuma ação.</li>
+      <li><span class="tag ruim">OK-</span>: Atividade que precisa ser revisada ou complementada para atingir o resultado esperado.</li>
+      <li><span class="tag ruim">Pendente</span>: Atividade ainda não realizada ou não registrada.</li>
+    </ul>
+    <p style="margin:10px 0 0">Se alguma atividade estiver marcada como <b>OK-</b> ou <b>Pendente</b>, clique sobre o status para acessar o link da atividade correspondente e regularizar sua situação.</p>
+    <p style="margin:10px 0 0">Confira todos os componentes e atividades para garantir que não fique nenhuma pendência!</p>
+  </section>
+  <div class="linha-sel">
+    <div>
+      <label for="aluno">Selecione seu nome</label>
+      <select id="aluno"><option value="">— Escolha —</option></select>
+    </div>
+    <label class="ciente"><input type="checkbox" id="ciente">
+      <span>Declaro que li as orientações acima e concordo em visualizar as minhas atividades. Ao clicar em Visualizar, meu nome, IP, data e hora serão registrados.</span></label>
+    <button id="confirmar" disabled>Visualizar</button>
+  </div>
+  <p id="msg" role="status"></p>
+  <p class="vazio" id="vazio">Escolha seu nome, marque a declaração e clique em Visualizar.</p>
+  <div class="rolagem" id="area" hidden>
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">ALUNO</th>
+          <th colspan="3">Introdução a Administração</th>
+        </tr>
+        <tr id="cab2"></tr>
+      </thead>
+      <tbody id="corpo"></tbody>
+    </table>
+  </div>
+</main>
+<script>
+  const LINKS = [
+    { nome: "Revisão Saresp",     url: "https://forms.cloud.microsoft/r/DiKYit9Nhz" },
+    { nome: "Atividades Remotas", url: "https://eduugomes.github.io/EcoVitta/" },
+    { nome: "Educação Profissional", url: "https://educacaoprofissional.educacao.sp.gov.br/" }
+  ];
+
+  // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
+  // P = Pendente
+  const DADOS = [
+    ["ANA LETICIA","OK OK OK"],
+    ["BRYAN APARECIDO","OK P OK"],
+    ["DANIEL AUGUSTO","OK OK OK"],
+    ["DANIEL CAMILO","OK OK OK"],
+    ["FELIPE EDUARDO","OK OK OK"],
+    ["IAGO PIETRO","OK OK OK"],
+    ["ISABELLY DE OLIVEIRA","OK OK OK"],
+    ["ISABELY VITORIA","OK P P"],
+    ["JOAO LUCAS","P P P"],
+    ["LEANDRO DONIZETI","P OK OK"],
+    ["LUIZ HENRIQUE","OK P OK"],
+    ["MILENA UBALDO","P P P"],
+    ["MILENE CARDOSO","OK P OK"],
+    ["MURILLO JOSIAS","OK P OK"],
+    ["NATALIE DO COUTO","OK P OK"],
+    ["NIKOLAS GABRIEL","OK OK P"],
+    ["PEDRO HENRIQUE","OK P P"],
+    ["RAFAEL AGUIAR","OK OK OK"],    
+    ["RAFAELA APARECIDA","OK OK OK"],
+    ["RILARY RODRIGUES","OK P OK"],
+    ["STEPHANY GARCIA","OK P OK"],
+    ["VICTOR LEITE","P OK P"],
+    ["VITOR APARECIDO","OK P P"],
+    ["WESLEY FELIPE","OK OK P"],
+    ["YAGO VINICIUS","OK P OK"],
+    ["CINTHIA GONÇALVES","P P P"]
+  ].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+
+  // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
+  const contagem = {};
+  DADOS.forEach(d => contagem[d.nome] = (contagem[d.nome] || 0) + 1);
+  const visto = {};
+  DADOS.forEach(d => {
+    visto[d.nome] = (visto[d.nome] || 0) + 1;
+    d.rotulo = contagem[d.nome] > 1 ? `${d.nome} (${visto[d.nome]})` : d.nome;
+  });
+
+  const sel = document.getElementById("aluno");
+  DADOS.forEach((d, i) => sel.add(new Option(d.rotulo, i)));
+
+  // Cabeçalho da 2ª linha com links
+  const cab2 = document.getElementById("cab2");
+  for (let g = 0; g < 3; g++) LINKS.forEach(l => {
+    const th = document.createElement("th");
+    th.innerHTML = `<a href="${l.url}" target="_blank" rel="noopener">${l.nome}</a>`;
+    cab2.appendChild(th);
+  });
+
+  const corpo = document.getElementById("corpo");
+  const area = document.getElementById("area");
+  const vazio = document.getElementById("vazio");
+
+  // ---- Registro da visualização ----
+  // Cole aqui a URL do aplicativo web (Google Apps Script) ligado à planilha.
+  const URL_REGISTRO = "https://script.google.com/macros/s/AKfycbzuAT0YiTiyz6cNpT9E8lmzM1RcfagwC7e9ITThjDKknOOq-YwMfO8odZXA6mrz_2ui/exec";
+
+  const ciente = document.getElementById("ciente");
+  const btn = document.getElementById("confirmar");
+  const msg = document.getElementById("msg");
+
+  function resetar() {
+    corpo.innerHTML = ""; area.hidden = true; vazio.hidden = false;
+    msg.textContent = ""; msg.className = "";
+  }
+  function atualizarBotao() { btn.disabled = !(sel.value !== "" && ciente.checked); }
+
+  sel.addEventListener("change", () => { resetar(); atualizarBotao(); });
+  ciente.addEventListener("change", () => {
+    if (!ciente.checked) resetar();
+    atualizarBotao();
+  });
+
+  function mostrar(d) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="nome">${d.nome}</td>`;
+    d.status.forEach((s, i) => {
+      const ruim = s === "P" || s === "OK-";
+      const txt = s === "P" ? "Pendente" : s;
+      tr.innerHTML += `<td><a href="${LINKS[i % 3].url}" target="_blank" rel="noopener" class="${ruim ? "ruim" : ""}">${txt}</a></td>`;
+    });
+    corpo.innerHTML = ""; corpo.appendChild(tr);
+    area.hidden = false; vazio.hidden = true;
+  }
+
+  async function obterIP() {
+    try {
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 4000);
+      const r = await fetch("https://api.ipify.org?format=json", { signal: c.signal });
+      clearTimeout(t);
+      return (await r.json()).ip || "não obtido";
+    } catch (e) { return "não obtido"; }
+  }
+
+  btn.addEventListener("click", async () => {
+    const d = DADOS[sel.value];
+    const agora = new Date();
+    const data = agora.toLocaleDateString("pt-BR");
+    const hora = agora.toLocaleTimeString("pt-BR");
+    const quando = data + " às " + hora;
+    const arquivo = decodeURIComponent(location.pathname.split("/").pop()) || "index.html";
+    btn.disabled = true;
+    if (URL_REGISTRO) {
+      try {
+        const ip = await obterIP();
+        await fetch(URL_REGISTRO, { method: "POST", mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo }) });
+      } catch (e) {
+        msg.textContent = "Não foi possível registrar agora. Verifique a internet e tente de novo.";
+        msg.className = "erro"; atualizarBotao(); return;
+      }
+      msg.textContent = "Visualização registrada em " + quando + ".";
+      msg.className = "ok";
+    } else {
+      msg.textContent = "Atenção: o registro ainda não foi configurado, esta visualização não foi gravada.";
+      msg.className = "erro";
+    }
+    mostrar(d);
+    atualizarBotao();
+  });
+</script>
+</body>
+</html>
