@@ -215,7 +215,7 @@
         const ip = await obterIP();
         await fetch(URL_REGISTRO, { method: "POST", mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo }) });
+          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo, url: location.href.split("#")[0] }) });
       } catch (e) {
         msg.textContent = "Não foi possível registrar agora. Verifique a internet e tente de novo.";
         msg.className = "erro"; atualizarBotao(); return;
