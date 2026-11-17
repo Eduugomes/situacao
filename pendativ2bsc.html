@@ -80,9 +80,7 @@
       <thead>
         <tr>
           <th rowspan="2">ALUNO</th>
-          <th colspan="3">Comunicação Empresarial</th>
-          <th colspan="3">Gestão de Operações</th>
-          <th colspan="3">Marketing Estratégico</th>
+          <th colspan="3">Carreira e Competências para o Mercado de Trabalho em Administração</th>
         </tr>
         <tr id="cab2"></tr>
       </thead>
@@ -92,36 +90,56 @@
 </main>
 <script>
   const LINKS = [
-    { nome: "Revisão Saresp",     url: "https://forms.cloud.microsoft/r/DiKYit9Nhz" },
+    { nome: "Revisão Saresp",     url: "https://forms.cloud.microsoft/r/whmekSjLk1" },
     { nome: "Atividades Remotas", url: "https://eduugomes.github.io/EcoVitta/" },
     { nome: "Educação Profissional", url: "https://educacaoprofissional.educacao.sp.gov.br/" }
   ];
 
   // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
   // P = Pendente
-  const DADOS = [
-    ["ANA LAURA","P P P  P P OK-  P P P"],
-    ["CAIO EXPEDITO","OK OK P  OK OK OK+  OK P OK+"],
-    ["CAUAN AKYU","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["GABRIEL DOS SANTOS","OK OK P  OK OK OK-  OK OK P"],
-    ["GABRIEL TEODORO","OK OK OK-  OK OK OK  OK OK OK+"],
-    ["GABRIELI DA SILVA","OK P OK+  OK P OK+  OK P OK+"],
-    ["GIOVANNA TOLEDO","OK P P  OK P OK-  OK P OK-"],
-    ["HALLEY FABRICIO","OK OK P  OK OK OK-  OK P P"],
-    ["JOÃO GABRIEL","OK P P  OK P OK+  OK P OK+"],
-    ["JULIA APARECIDA","OK P P  OK P OK-  OK P OK+"],
-    ["LAURA BORGES","P OK OK+  P OK OK+  P OK OK+"],
-    ["LEONARDO ELIAS","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["MANUELA SENCIANI","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["MARIA LUISA","P OK OK+  P OK OK+  P OK OK+"],
-    ["MARIANA DE LIMA","OK P P  OK P OK-  OK P OK-"],
-    ["MAURICIO JUNIOR","P P OK-  P P OK  P P OK+"],
-    ["SARA ARAUJO","OK P P  OK P OK+  OK P OK+"],
-    ["TAUANY BALDUINO","OK P P  OK P P  OK P OK-"],
-    ["THIAGO HENRIQUE","OK P OK-  OK P OK-  OK P OK+"],
-    ["YASMIN LOPES","OK P OK-  OK P OK+  OK P OK+"],
-    ["YUDI HENRIQUE","OK OK OK+  OK OK OK+  OK OK OK+"]
-  ].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+const DADOS = [
+  ["ANA BEATRIZ", "P P P"],
+  ["ANA LUIZA", "P P P"],
+  ["ARYELLA LEMOS", "P P P"],
+  ["EMILY LAUANY", "P P P"],
+  ["FELIPE DOS SANTOS", "P P P"],
+  ["FELIPE GABRIEL", "P P P"],
+  ["FILIPE ESTEVAM", "OK P P"],
+  ["GUSTAVO SOUZA", "P P P"],
+  ["HEITOR RANCAN", "P P P"],
+  ["HELLEN REGINALDO", "OK P OK"],
+  ["INGRID DANIELE", "OK P P"],
+  ["INGRIDY GUIMARAES", "OK P P"],
+  ["JOAO VICTOR", "OK OK P"],
+  ["JOEL JOAQUIM", "P P P"],
+  ["KAUA MARIANO", "P P P"],
+  ["KAYKY LUAN", "P P P"],
+  ["KEVIN RODRIGO", "P P P"],
+  ["LIVIA JANUARIO", "OK OK OK"],
+  ["LORENA LIMA", "P P P"],
+  ["LUCAS BRITTO", "P P P"],
+  ["LUCAS DE OLIVEIRA", "P P P"],
+  ["LUIZ FERNANDO", "P P P"],
+  ["MARIA EDUARDA", "P P P"],
+  ["MATHEUS MONTAGNANA", "P P P"],
+  ["MIRELLA STEPHAN", "P P P"],
+  ["NICHOLAS FERNANDES", "OK P P"],
+  ["NICOLLE DA SILVA", "OK P P"],
+  ["PIETRO BARBIERI", "OK P P"],
+  ["QUEILA DE ALMEIDA", "OK OK P"],
+  ["RAFAELA LUIZA", "P P P"],
+  ["RICARDO HENRIQUE", "P P P"],
+  ["RICHARD EDUARDO", "P P P"],
+  ["RYCHARD GABRYEL", "P P P"],
+  ["SARAH REBECA", "P P P"],
+  ["TIFANI NICOLI", "P P P"],
+  ["YASMIM GABRIELLE", "OK P P"],
+  ["ZAQUEU HENRIQUE", "P P P"],
+  ["PABLO HENRIQUE", "P P P"],
+  ["JEAN LUKKA", "P P P"],
+  ["KEVYN VICTOR", "P P P"],
+  ["LUÍS RAFAEL", "P P P"]
+].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
 
   // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
   const contagem = {};
@@ -137,7 +155,7 @@
 
   // Cabeçalho da 2ª linha com links
   const cab2 = document.getElementById("cab2");
-  for (let g = 0; g < 3; g++) LINKS.forEach(l => {
+  for (let g = 0; g < 1; g++) LINKS.forEach(l => {
     const th = document.createElement("th");
     th.innerHTML = `<a href="${l.url}" target="_blank" rel="noopener">${l.nome}</a>`;
     cab2.appendChild(th);
@@ -201,7 +219,7 @@
         const ip = await obterIP();
         await fetch(URL_REGISTRO, { method: "POST", mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo }) });
+          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo, url: location.href.split("#")[0] }) });
       } catch (e) {
         msg.textContent = "Não foi possível registrar agora. Verifique a internet e tente de novo.";
         msg.className = "erro"; atualizarBotao(); return;
