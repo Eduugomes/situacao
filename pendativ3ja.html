@@ -99,29 +99,29 @@
 
   // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
   // P = Pendente
-  const DADOS = [
-    ["ANA LAURA","P P P  P P OK-  P P P"],
-    ["CAIO EXPEDITO","OK OK P  OK OK OK+  OK P OK+"],
-    ["CAUAN AKYU","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["GABRIEL DOS SANTOS","OK OK P  OK OK OK-  OK OK P"],
-    ["GABRIEL TEODORO","OK OK OK-  OK OK OK  OK OK OK+"],
-    ["GABRIELI DA SILVA","OK P OK+  OK P OK+  OK P OK+"],
-    ["GIOVANNA TOLEDO","OK P P  OK P OK-  OK P OK-"],
-    ["HALLEY FABRICIO","OK OK P  OK OK OK-  OK P P"],
-    ["JOÃO GABRIEL","OK P P  OK P OK+  OK P OK+"],
-    ["JULIA APARECIDA","OK P P  OK P OK-  OK P OK+"],
-    ["LAURA BORGES","P OK OK+  P OK OK+  P OK OK+"],
-    ["LEONARDO ELIAS","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["MANUELA SENCIANI","OK OK OK+  OK OK OK+  OK OK OK+"],
-    ["MARIA LUISA","P OK OK+  P OK OK+  P OK OK+"],
-    ["MARIANA DE LIMA","OK P P  OK P OK-  OK P OK-"],
-    ["MAURICIO JUNIOR","P P OK-  P P OK  P P OK+"],
-    ["SARA ARAUJO","OK P P  OK P OK+  OK P OK+"],
-    ["TAUANY BALDUINO","OK P P  OK P P  OK P OK-"],
-    ["THIAGO HENRIQUE","OK P OK-  OK P OK-  OK P OK+"],
-    ["YASMIN LOPES","OK P OK-  OK P OK+  OK P OK+"],
-    ["YUDI HENRIQUE","OK OK OK+  OK OK OK+  OK OK OK+"]
-  ].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+const DADOS = [
+  ["ANA LAURA", "OK OK OK  OK OK OK  OK OK OK"],
+  ["CAIO EXPEDITO", "OK OK P  OK OK OK+  OK OK OK+"],
+  ["CAUAN AKYU", "OK OK OK+  OK OK OK+  OK OK OK+"],
+  ["GABRIEL SANTOS", "OK OK P  OK OK P  OK OK OK-"],
+  ["GABRIEL TEODORO", "OK OK OK  OK OK OK  OK OK OK+"],
+  ["GABRIELI SILVA", "OK P OK+  OK P OK+  OK P OK+"],
+  ["GIOVANNA TOLEDO", "OK P P  OK P OK  OK P OK-"],
+  ["HALLEY FABRICIO", "OK OK OK  OK OK OK  OK OK OK"],
+  ["JOAO GABRIEL", "OK OK OK  OK OK OK+  OK OK OK+"],
+  ["JULIA APARECIDA", "OK OK OK  OK OK P  OK OK OK+"],
+  ["LAURA BORGES", "OK OK OK+  OK OK OK+  OK OK OK+"],
+  ["LEONARDO ELIAS", "OK OK OK+  OK OK OK+  OK OK OK+"],
+  ["MANUELA SENCIANI", "OK OK OK+  OK OK OK+  OK OK OK+"],
+  ["MARIA LUISA", "OK OK OK+  OK OK OK+  OK OK OK+"],
+  ["MARIANA LIMA", "OK OK OK  OK OK OK  OK OK OK-"],
+  ["MAURICIO JUNIOR", "OK P OK  OK P OK  OK P OK+"],
+  ["SARA ARAUJO", "OK OK OK  OK OK OK+  OK OK OK+"],
+  ["TAUANY BALDUINO", "OK OK OK  OK OK OK  OK OK OK-"],
+  ["THIAGO HENRIQUE", "OK P OK  OK P P  OK P OK-"],
+  ["YASMIN LOPES", "OK P OK-  OK P OK+  OK P OK+"],
+  ["YUDI HENRIQUE", "OK OK OK+  OK OK OK+  OK OK OK+"]
+].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
 
   // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
   const contagem = {};

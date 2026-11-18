@@ -97,34 +97,33 @@
 
   // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
   // P = Pendente
-  const DADOS = [
-    ["ANA LETICIA","OK OK OK"],
-    ["BRYAN APARECIDO","OK P OK"],
-    ["DANIEL AUGUSTO","OK OK OK"],
-    ["DANIEL CAMILO","OK OK OK"],
-    ["FELIPE EDUARDO","OK OK OK"],
-    ["IAGO PIETRO","OK OK OK"],
-    ["ISABELLY DE OLIVEIRA","OK OK OK"],
-    ["ISABELY VITORIA","OK P P"],
-    ["JOAO LUCAS","P P P"],
-    ["LEANDRO DONIZETI","P OK OK"],
-    ["LUIZ HENRIQUE","OK P OK"],
-    ["MILENA UBALDO","P P P"],
-    ["MILENE CARDOSO","OK P OK"],
-    ["MURILLO JOSIAS","OK P OK"],
-    ["NATALIE DO COUTO","OK P OK"],
-    ["NIKOLAS GABRIEL","OK OK P"],
-    ["PEDRO HENRIQUE","OK P P"],
-    ["RAFAEL AGUIAR","OK OK OK"],    
-    ["RAFAELA APARECIDA","OK OK OK"],
-    ["RILARY RODRIGUES","OK P OK"],
-    ["STEPHANY GARCIA","OK P OK"],
-    ["VICTOR LEITE","P OK P"],
-    ["VITOR APARECIDO","OK P P"],
-    ["WESLEY FELIPE","OK OK P"],
-    ["YAGO VINICIUS","OK P OK"],
-    ["CINTHIA GONÇALVES","P P P"]
-  ].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+const DADOS = [
+  ["ANA LETICIA", "OK OK OK"],
+  ["BRYAN APARECIDO", "OK OK OK"],
+  ["DANIEL AUGUSTO", "OK OK OK"],
+  ["DANIEL CAMILO", "OK OK OK"],
+  ["FELIPE EDUARDO", "OK OK OK"],
+  ["IAGO PIETRO", "OK OK OK"],
+  ["ISABELLY OLIVEIRA", "OK OK OK"],
+  ["ISABELY VITORIA", "OK P P"],
+  ["JOAO LUCAS", "OK OK P"],
+  ["LEANDRO DONIZETI", "OK OK OK"],
+  ["LUIZ HENRIQUE", "OK P OK"],
+  ["MILENA UBALDO", "OK P P"],
+  ["MILENE CARDOSO", "OK P OK"],
+  ["MURILLO JOSIAS", "OK P OK"],
+  ["NATALIE COUTO", "OK P OK"],
+  ["NIKOLAS GABRIEL", "OK OK OK"],
+  ["PEDRO HENRIQUE", "OK P P"],
+  ["RAFAEL AGUIAR", "OK OK OK"],
+  ["RAFAELA APARECIDA", "OK OK OK"],
+  ["RILARY RODRIGUES", "OK OK OK"],
+  ["STEPHANY GARCIA", "OK P OK"],
+  ["VICTOR LEITE", "P OK P"],
+  ["VITOR APARECIDO", "OK P P"],
+  ["WESLEY FELIPE", "OK OK P"],
+  ["YAGO VINICIUS", "OK OK OK"]
+].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
 
   // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
   const contagem = {};
