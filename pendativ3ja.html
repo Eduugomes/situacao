@@ -1,220 +1,979 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Consulta de pendências</title>
+<title>Consulta de pendências - 3º Ano</title>
+
 <style>
-  :root { --azul:#2f4672; --texto:#1b1f27; --fundo:#f3f5f9; --vermelho:#e0001b; --linha:#c9ced8; }
-  * { box-sizing: border-box; }
-  body { margin:0; padding:24px 16px; background:var(--fundo); color:var(--texto);
-         font-family: "Segoe UI", Arial, sans-serif; }
-  main { max-width:1000px; margin:0 auto; }
-  h1 { font-size:1.4rem; margin:0 0 16px; }
-  label { display:block; font-weight:600; margin-bottom:6px; }
-  select { font:inherit; padding:10px 12px; min-width:280px; max-width:100%; border:2px solid var(--azul);
-           border-radius:6px; background:#fff; }
-  select:focus-visible { outline:3px solid #8fb0ee; outline-offset:2px; }
-  .vazio { margin:24px 0; color:#566; }
-  .rolagem { overflow-x:auto; margin-top:20px; }
-  table { border-collapse:collapse; width:100%; min-width:720px; background:#fff; }
-  th, td { border:1px solid var(--linha); text-align:center; padding:0; }
-  thead th { background:var(--azul); color:#fff; font-weight:700; }
-  thead tr:first-child th { padding:10px; font-size:1.05rem; }
-  thead tr:nth-child(2) th { font-size:.95rem; }
-  th a { display:block; padding:10px 6px; color:#fff; text-decoration:none; }
-  th a:hover, th a:focus-visible { background:#3f5a8f; text-decoration:underline; }
-  td.nome { padding:12px; text-align:left; font-weight:600; }
-  td a { display:block; padding:12px 6px; text-decoration:none; font-weight:700; font-size:1.05rem; color:#000; }
-  td a:hover, td a:focus-visible { background:#e8edf7; text-decoration:underline; }
-  td a.ruim { color:var(--vermelho); }
-  .guia { background:#fff; border:1px solid var(--linha); border-left:5px solid var(--azul); border-radius:6px;
-          padding:14px 18px; margin:0 0 22px; line-height:1.5; }
-  .guia h2 { font-size:1.05rem; margin:0 0 8px; }
-  .guia ul { margin:0; padding-left:20px; }
+  :root {
+    --azul:#2f4672;
+    --texto:#1b1f27;
+    --fundo:#f3f5f9;
+    --vermelho:#e0001b;
+    --linha:#c9ced8;
+  }
+
+  * { box-sizing:border-box; }
+
+  body {
+    margin:0;
+    padding:24px 16px;
+    background:var(--fundo);
+    color:var(--texto);
+    font-family:"Segoe UI", Arial, sans-serif;
+  }
+
+  main {
+    max-width:1500px;
+    margin:0 auto;
+  }
+
+  h1 {
+    font-size:1.4rem;
+    margin:0 0 16px;
+  }
+
+  label {
+    display:block;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+
+  select {
+    font:inherit;
+    padding:10px 12px;
+    min-width:280px;
+    max-width:100%;
+    border:2px solid var(--azul);
+    border-radius:6px;
+    background:#fff;
+  }
+
+  select:focus-visible {
+    outline:3px solid #8fb0ee;
+    outline-offset:2px;
+  }
+
+  .vazio {
+    margin:24px 0;
+    color:#566;
+  }
+
+  .guia {
+    background:#fff;
+    border:1px solid var(--linha);
+    border-left:5px solid var(--azul);
+    border-radius:6px;
+    padding:14px 18px;
+    margin:0 0 22px;
+    line-height:1.5;
+  }
+
+  .guia h2 {
+    font-size:1.05rem;
+    margin:0 0 8px;
+  }
+
+  .guia ul {
+    margin:0;
+    padding-left:20px;
+  }
+
   .guia li { margin-bottom:6px; }
+
   .tag { font-weight:700; }
   .tag.ruim { color:var(--vermelho); }
-  .conf { background:#fff; border:1px solid var(--linha); border-radius:6px; padding:16px 18px; margin-top:20px; }
-  .conf label { display:flex; gap:10px; align-items:flex-start; font-weight:400; margin:0 0 12px; cursor:pointer; }
-  .conf input[type=checkbox] { width:20px; height:20px; margin-top:2px; flex:none; }
-  button { font:inherit; font-weight:600; padding:10px 20px; border:0; border-radius:6px; background:var(--azul);
-           color:#fff; cursor:pointer; }
-  button:disabled { background:#9aa5bd; cursor:not-allowed; }
-  button:focus-visible { outline:3px solid #8fb0ee; outline-offset:2px; }
-  #msg { margin:12px 0 0; font-weight:600; }
-  #msg.ok { color:#1d6b32; } #msg.erro { color:var(--vermelho); }
-  .linha-sel { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; background:#fff; border:1px solid var(--linha);
-               border-radius:6px; padding:16px 18px; }
-  .linha-sel .ciente { display:flex; gap:10px; align-items:flex-start; font-weight:400; margin:0; cursor:pointer;
-                       flex:1 1 260px; max-width:420px; }
-  .linha-sel input[type=checkbox] { width:20px; height:20px; margin-top:2px; flex:none; }
+
+  .linha-sel {
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    align-items:flex-end;
+    background:#fff;
+    border:1px solid var(--linha);
+    border-radius:6px;
+    padding:16px 18px;
+  }
+
+  .linha-sel .ciente {
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-weight:400;
+    margin:0;
+    cursor:pointer;
+    flex:1 1 260px;
+    max-width:520px;
+  }
+
+  .linha-sel input[type=checkbox] {
+    width:20px;
+    height:20px;
+    margin-top:2px;
+    flex:none;
+  }
+
+  button {
+    font:inherit;
+    font-weight:600;
+    padding:10px 20px;
+    border:0;
+    border-radius:6px;
+    background:var(--azul);
+    color:#fff;
+    cursor:pointer;
+  }
+
+  button:disabled {
+    background:#9aa5bd;
+    cursor:not-allowed;
+  }
+
+  button:focus-visible {
+    outline:3px solid #8fb0ee;
+    outline-offset:2px;
+  }
+
+  #msg {
+    margin:12px 0 0;
+    font-weight:600;
+  }
+
+  #msg.ok { color:#1d6b32; }
+  #msg.erro { color:var(--vermelho); }
+
+  .rolagem {
+    overflow-x:auto;
+    margin-top:20px;
+  }
+
+  table {
+    border-collapse:collapse;
+    width:100%;
+    min-width:1500px;
+    background:#fff;
+  }
+
+  th, td {
+    border:1px solid var(--linha);
+    text-align:center;
+    padding:0;
+  }
+
+  thead th {
+    background:var(--azul);
+    color:#fff;
+    font-weight:700;
+  }
+
+  thead tr:first-child th {
+    padding:10px 6px;
+    font-size:1rem;
+  }
+
+  thead tr:nth-child(2) th {
+    font-size:.9rem;
+  }
+
+  th a {
+    display:block;
+    padding:10px 6px;
+    color:#fff;
+    text-decoration:none;
+  }
+
+  th a:hover,
+  th a:focus-visible {
+    background:#3f5a8f;
+    text-decoration:underline;
+  }
+
+  td.nome {
+    padding:12px;
+    text-align:left;
+    font-weight:600;
+    min-width:210px;
+  }
+
+  td a {
+    display:block;
+    padding:12px 6px;
+    text-decoration:none;
+    font-weight:700;
+    font-size:1rem;
+    color:#000;
+  }
+
+  td a:hover,
+  td a:focus-visible {
+    background:#e8edf7;
+    text-decoration:underline;
+  }
+
+  td a.ruim { color:var(--vermelho); }
+
+  td.presenca {
+    padding:12px 8px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  td.situacao {
+    padding:10px;
+    min-width:170px;
+    font-weight:700;
+  }
+
+  td.situacao a.compensacao {
+    color:var(--vermelho);
+    font-size:.9rem;
+    line-height:1.3;
+  }
+
+  td.situacao .regular {
+    color:#1d6b32;
+    font-size:.85rem;
+  }
+
+  #orientacoesCompensacao {
+    margin-top:20px;
+  }
+
+  .bloco-compensacao {
+    background:#fff8e8;
+    border:1px solid #e5c98b;
+    border-radius:10px;
+    padding:20px;
+    margin-top:20px;
+    color:#333;
+    text-align:left;
+  }
+
+  .bloco-compensacao h2 {
+    margin-top:0;
+    color:#163A5F;
+  }
+
+  .bloco-compensacao h3 {
+    margin-bottom:10px;
+    color:#163A5F;
+  }
+
+  .bloco-compensacao ul {
+    padding-left:22px;
+  }
+
+  .bloco-compensacao li {
+    margin-bottom:10px;
+    line-height:1.5;
+  }
+
+  .bloco-compensacao .link-atividade {
+    display:inline-block;
+    margin-top:12px;
+    padding:12px 18px;
+    background:#163A5F;
+    color:white;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+  }
+
+  .bloco-compensacao .link-atividade:hover {
+    background:#2474A6;
+  }
 </style>
 </head>
+
 <body>
 <main>
-  <h1>Consulta de pendências</h1>
+
+  <h1>Consulta de pendências - 3º Ano</h1>
+
   <section class="guia" aria-labelledby="guia-t">
     <h2 id="guia-t">Como ler a sua situação</h2>
+
     <ul>
       <li><span class="tag">OK / OK+</span>: Atividade concluída e aprovada. Não é necessário realizar nenhuma ação.</li>
       <li><span class="tag ruim">OK-</span>: Atividade que precisa ser revisada ou complementada para atingir o resultado esperado.</li>
       <li><span class="tag ruim">Pendente</span>: Atividade ainda não realizada ou não registrada.</li>
     </ul>
-    <p style="margin:10px 0 0">Se alguma atividade estiver marcada como <b>OK-</b> ou <b>Pendente</b>, clique sobre o status para acessar o link da atividade correspondente e regularizar sua situação.</p>
-    <p style="margin:10px 0 0">Confira todos os componentes e atividades para garantir que não fique nenhuma pendência!</p>
+
+    <p style="margin:10px 0 0">
+      Se alguma atividade estiver marcada como <b>OK-</b> ou <b>Pendente</b>,
+      clique sobre o status para acessar o link da atividade correspondente
+      e regularizar sua situação.
+    </p>
+
+    <p style="margin:10px 0 0">
+      Confira todos os componentes e atividades para garantir que não fique nenhuma pendência!
+    </p>
   </section>
+
   <div class="linha-sel">
+
     <div>
       <label for="aluno">Selecione seu nome</label>
-      <select id="aluno"><option value="">— Escolha —</option></select>
+      <select id="aluno">
+        <option value="">— Escolha —</option>
+      </select>
     </div>
-    <label class="ciente"><input type="checkbox" id="ciente">
-      <span>Declaro que li as orientações acima e concordo em visualizar as minhas atividades. Ao clicar em Visualizar, meu nome, IP, data e hora serão registrados.</span></label>
+
+    <label class="ciente">
+      <input type="checkbox" id="ciente">
+      <span>
+        Declaro que li as orientações acima e concordo em visualizar
+        as minhas atividades. Ao clicar em Visualizar, meu nome,
+        IP, data e hora serão registrados.
+      </span>
+    </label>
+
     <button id="confirmar" disabled>Visualizar</button>
+
   </div>
+
   <p id="msg" role="status"></p>
-  <p class="vazio" id="vazio">Escolha seu nome, marque a declaração e clique em Visualizar.</p>
+
+  <p class="vazio" id="vazio">
+    Escolha seu nome, marque a declaração e clique em Visualizar.
+  </p>
+
   <div class="rolagem" id="area" hidden>
+
     <table>
       <thead>
         <tr>
           <th rowspan="2">ALUNO</th>
-          <th colspan="3">Comunicação Empresarial</th>
-          <th colspan="3">Gestão de Operações</th>
-          <th colspan="3">Marketing Estratégico</th>
+          <th colspan="5">Comunicação Empresarial</th>
+          <th colspan="5">Gestão de Operações</th>
+          <th colspan="5">Marketing Estratégico</th>
         </tr>
         <tr id="cab2"></tr>
       </thead>
+
       <tbody id="corpo"></tbody>
     </table>
+
   </div>
+
+  <div id="orientacoesCompensacao"></div>
+
 </main>
+
 <script>
-  const LINKS = [
-    { nome: "Revisão Saresp",     url: "https://forms.cloud.microsoft/r/DiKYit9Nhz" },
-    { nome: "Atividades Remotas", url: "https://eduugomes.github.io/EcoVitta/" },
-    { nome: "Educação Profissional", url: "https://educacaoprofissional.educacao.sp.gov.br/" }
-  ];
 
-  // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
-  // P = Pendente
-const DADOS = [
-  ["ANA LAURA", "OK OK OK  OK OK OK  OK OK OK"],
-  ["CAIO EXPEDITO", "OK OK P  OK OK OK+  OK OK OK+"],
-  ["CAUAN AKYU", "OK OK OK+  OK OK OK+  OK OK OK+"],
-  ["GABRIEL SANTOS", "OK OK P  OK OK P  OK OK OK-"],
-  ["GABRIEL TEODORO", "OK OK OK  OK OK OK  OK OK OK+"],
-  ["GABRIELI SILVA", "OK P OK+  OK P OK+  OK P OK+"],
-  ["GIOVANNA TOLEDO", "OK P P  OK P OK  OK P OK-"],
-  ["HALLEY FABRICIO", "OK OK OK  OK OK OK  OK OK OK"],
-  ["JOAO GABRIEL", "OK OK OK  OK OK OK+  OK OK OK+"],
-  ["JULIA APARECIDA", "OK OK OK  OK OK P  OK OK OK+"],
-  ["LAURA BORGES", "OK OK OK+  OK OK OK+  OK OK OK+"],
-  ["LEONARDO ELIAS", "OK OK OK+  OK OK OK+  OK OK OK+"],
-  ["MANUELA SENCIANI", "OK OK OK+  OK OK OK+  OK OK OK+"],
-  ["MARIA LUISA", "OK OK OK+  OK OK OK+  OK OK OK+"],
-  ["MARIANA LIMA", "OK OK OK  OK OK OK  OK OK OK-"],
-  ["MAURICIO JUNIOR", "OK P OK  OK P OK  OK P OK+"],
-  ["SARA ARAUJO", "OK OK OK  OK OK OK+  OK OK OK+"],
-  ["TAUANY BALDUINO", "OK OK OK  OK OK OK  OK OK OK-"],
-  ["THIAGO HENRIQUE", "OK P OK  OK P P  OK P OK-"],
-  ["YASMIN LOPES", "OK P OK-  OK P OK+  OK P OK+"],
-  ["YUDI HENRIQUE", "OK OK OK+  OK OK OK+  OK OK OK+"]
-].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+// ======================================================
+// LINKS DAS ATIVIDADES E DOS PDFs DE COMPENSAÇÃO
+// ======================================================
 
-  // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
-  const contagem = {};
-  DADOS.forEach(d => contagem[d.nome] = (contagem[d.nome] || 0) + 1);
-  const visto = {};
-  DADOS.forEach(d => {
-    visto[d.nome] = (visto[d.nome] || 0) + 1;
-    d.rotulo = contagem[d.nome] > 1 ? `${d.nome} (${visto[d.nome]})` : d.nome;
-  });
-
-  const sel = document.getElementById("aluno");
-  DADOS.forEach((d, i) => sel.add(new Option(d.rotulo, i)));
-
-  // Cabeçalho da 2ª linha com links
-  const cab2 = document.getElementById("cab2");
-  for (let g = 0; g < 3; g++) LINKS.forEach(l => {
-    const th = document.createElement("th");
-    th.innerHTML = `<a href="${l.url}" target="_blank" rel="noopener">${l.nome}</a>`;
-    cab2.appendChild(th);
-  });
-
-  const corpo = document.getElementById("corpo");
-  const area = document.getElementById("area");
-  const vazio = document.getElementById("vazio");
-
-  // ---- Registro da visualização ----
-  // Cole aqui a URL do aplicativo web (Google Apps Script) ligado à planilha.
-  const URL_REGISTRO = "https://script.google.com/macros/s/AKfycbzuAT0YiTiyz6cNpT9E8lmzM1RcfagwC7e9ITThjDKknOOq-YwMfO8odZXA6mrz_2ui/exec";
-
-  const ciente = document.getElementById("ciente");
-  const btn = document.getElementById("confirmar");
-  const msg = document.getElementById("msg");
-
-  function resetar() {
-    corpo.innerHTML = ""; area.hidden = true; vazio.hidden = false;
-    msg.textContent = ""; msg.className = "";
+const LINKS_ATIVIDADES = [
+  {
+    nome: "Revisão Saresp",
+    url: "https://forms.cloud.microsoft/r/DiKYit9Nhz"
+  },
+  {
+    nome: "Atividades Remotas",
+    url: "https://eduugomes.github.io/EcoVitta/"
+  },
+  {
+    nome: "Educação Profissional",
+    url: "https://educacaoprofissional.educacao.sp.gov.br/"
   }
-  function atualizarBotao() { btn.disabled = !(sel.value !== "" && ciente.checked); }
+];
 
-  sel.addEventListener("change", () => { resetar(); atualizarBotao(); });
-  ciente.addEventListener("change", () => {
-    if (!ciente.checked) resetar();
-    atualizarBotao();
+const DISCIPLINAS = [
+  {
+    nome: "Comunicação Empresarial",
+    pdf: "https://eduugomes.github.io/situacao/Compensacao_Ausencia_CE_3AJA.pdf"
+  },
+  {
+    nome: "Gestão de Operações",
+    pdf: "https://eduugomes.github.io/situacao/Compensacao_Ausencia_GO_3AJA.pdf"
+  },
+  {
+    nome: "Marketing Estratégico",
+    pdf: "https://eduugomes.github.io/situacao/Compensacao_Ausencia_ME_3AJA.pdf"
+  }
+];
+
+// ======================================================
+// DADOS DOS ALUNOS
+//
+// Cada disciplina possui:
+// status: três atividades
+// presenca: percentual de presença
+// compensacao: necessidade de compensação
+// ======================================================
+
+const DADOS = [
+
+  {
+    nome: "ANA LAURA",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 91.30, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 87.50, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 95.45, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "CAIO EXPEDITO",
+    disciplinas: [
+      { status: ["OK", "OK", "P"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 100.00, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "CAUAN AKYU",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 82.61, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 90.91, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "GABRIEL DOS SANTOS",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 78.26, compensacao: true },
+      { status: ["OK", "OK", "OK"], presenca: 75.00, compensacao: true },
+      { status: ["OK", "OK", "OK-"], presenca: 81.82, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "GABRIEL TEODORO",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 91.30, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 95.45, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "GABRIELI DA SILVA",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 73.91, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 75.00, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 86.36, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "GIOVANNA TOLEDO",
+    disciplinas: [
+      { status: ["OK", "P", "P"], presenca: 86.96, compensacao: false },
+      { status: ["OK", "P", "OK"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "P", "OK-"], presenca: 86.36, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "HALLEY FABRICIO",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 69.57, compensacao: true },
+      { status: ["OK", "OK", "OK"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 63.64, compensacao: true }
+    ]
+  },
+
+  {
+    nome: "JOAO GABRIEL",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 86.96, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 93.75, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 86.36, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "JULIA APARECIDA",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 91.30, compensacao: false },
+      { status: ["OK", "OK", "P"], presenca: 93.75, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 95.45, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "LAURA BORGES",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 73.91, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 62.50, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 68.18, compensacao: true }
+    ]
+  },
+
+  {
+    nome: "LEONARDO ELIAS",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 93.75, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 95.45, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "MANUELA SENCIANI",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 73.91, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 72.73, compensacao: true }
+    ]
+  },
+
+  {
+    nome: "MARIA LUISA",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 91.30, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 87.50, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 95.45, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "MARIANA DE LIMA",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 82.61, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 87.50, compensacao: false },
+      { status: ["OK", "OK", "OK-"], presenca: 90.91, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "MAURICIO JUNIOR",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 86.96, compensacao: false },
+      { status: ["OK", "P", "OK"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "P", "OK+"], presenca: 77.27, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "SARA ARAUJO",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 69.57, compensacao: true },
+      { status: ["OK", "OK", "OK+"], presenca: 87.50, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 81.82, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "TAUANY BALDUINO",
+    disciplinas: [
+      { status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+      { status: ["OK", "OK", "OK-"], presenca: 100.00, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "THIAGO HENRIQUE",
+    disciplinas: [
+      { status: ["OK", "P", "OK"], presenca: 82.61, compensacao: false },
+      { status: ["OK", "P", "P"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "P", "OK-"], presenca: 77.27, compensacao: false }
+    ]
+  },
+
+  {
+    nome: "YASMIN LOPES",
+    disciplinas: [
+      { status: ["OK", "P", "P"], presenca: 69.57, compensacao: true },
+      { status: ["OK", "P", "OK+"], presenca: 81.25, compensacao: false },
+      { status: ["OK", "P", "OK+"], presenca: 63.64, compensacao: true }
+    ]
+  },
+
+  {
+    nome: "YUDI HENRIQUE",
+    disciplinas: [
+      { status: ["OK", "OK", "OK+"], presenca: 95.65, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 87.50, compensacao: false },
+      { status: ["OK", "OK", "OK+"], presenca: 90.91, compensacao: false }
+    ]
+  }
+
+];
+
+// ======================================================
+// IDENTIFICAÇÃO DE NOMES REPETIDOS
+// ======================================================
+
+const contagem = {};
+
+DADOS.forEach(d => {
+  contagem[d.nome] = (contagem[d.nome] || 0) + 1;
+});
+
+const visto = {};
+
+DADOS.forEach(d => {
+  visto[d.nome] = (visto[d.nome] || 0) + 1;
+
+  d.rotulo = contagem[d.nome] > 1
+    ? `${d.nome} (${visto[d.nome]})`
+    : d.nome;
+});
+
+// ======================================================
+// ELEMENTOS DA PÁGINA
+// ======================================================
+
+const sel = document.getElementById("aluno");
+const cab2 = document.getElementById("cab2");
+const corpo = document.getElementById("corpo");
+const area = document.getElementById("area");
+const vazio = document.getElementById("vazio");
+const ciente = document.getElementById("ciente");
+const btn = document.getElementById("confirmar");
+const msg = document.getElementById("msg");
+
+// Preenche a lista de alunos
+
+DADOS.forEach((d, i) => {
+  sel.add(new Option(d.rotulo, i));
+});
+
+// ======================================================
+// CABEÇALHO DAS ATIVIDADES
+// ======================================================
+
+DISCIPLINAS.forEach(() => {
+
+  LINKS_ATIVIDADES.forEach(l => {
+
+    const th = document.createElement("th");
+
+    const a = document.createElement("a");
+    a.href = l.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = l.nome;
+
+    th.appendChild(a);
+    cab2.appendChild(th);
+
   });
 
-  function mostrar(d) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td class="nome">${d.nome}</td>`;
-    d.status.forEach((s, i) => {
+  const thPresenca = document.createElement("th");
+  thPresenca.textContent = "Presença";
+  cab2.appendChild(thPresenca);
+
+  const thSituacao = document.createElement("th");
+  thSituacao.textContent = "Situação";
+  cab2.appendChild(thSituacao);
+
+});
+
+// ======================================================
+// REGISTRO DA VISUALIZAÇÃO
+// ======================================================
+
+const URL_REGISTRO =
+  "https://script.google.com/macros/s/AKfycbzuAT0YiTiyz6cNpT9E8lmzM1RcfagwC7e9ITThjDKknOOq-YwMfO8odZXA6mrz_2ui/exec";
+
+// ======================================================
+// CONTROLE DA TELA
+// ======================================================
+
+function resetar() {
+
+  corpo.innerHTML = "";
+  area.hidden = true;
+  vazio.hidden = false;
+
+  document.getElementById("orientacoesCompensacao").innerHTML = "";
+
+  msg.textContent = "";
+  msg.className = "";
+
+}
+
+function atualizarBotao() {
+
+  btn.disabled = !(sel.value !== "" && ciente.checked);
+
+}
+
+sel.addEventListener("change", () => {
+
+  resetar();
+  atualizarBotao();
+
+});
+
+ciente.addEventListener("change", () => {
+
+  if (!ciente.checked) {
+    resetar();
+  }
+
+  atualizarBotao();
+
+});
+
+// ======================================================
+// EXIBIÇÃO DOS DADOS DO ALUNO
+// ======================================================
+
+function mostrar(d) {
+
+  const tr = document.createElement("tr");
+
+  // Nome do aluno
+
+  const tdNome = document.createElement("td");
+  tdNome.className = "nome";
+  tdNome.textContent = d.nome;
+  tr.appendChild(tdNome);
+
+  // Percorre as três disciplinas
+
+  d.disciplinas.forEach((disciplina, indiceDisciplina) => {
+
+    // Três atividades da disciplina
+
+    disciplina.status.forEach((s, indiceAtividade) => {
+
+      const td = document.createElement("td");
+      const a = document.createElement("a");
+
       const ruim = s === "P" || s === "OK-";
       const txt = s === "P" ? "Pendente" : s;
-      tr.innerHTML += `<td><a href="${LINKS[i % 3].url}" target="_blank" rel="noopener" class="${ruim ? "ruim" : ""}">${txt}</a></td>`;
+
+      a.href = LINKS_ATIVIDADES[indiceAtividade].url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = ruim ? "ruim" : "";
+      a.textContent = txt;
+
+      td.appendChild(a);
+      tr.appendChild(td);
+
     });
-    corpo.innerHTML = ""; corpo.appendChild(tr);
-    area.hidden = false; vazio.hidden = true;
-  }
 
-  async function obterIP() {
-    try {
-      const c = new AbortController(); const t = setTimeout(() => c.abort(), 4000);
-      const r = await fetch("https://api.ipify.org?format=json", { signal: c.signal });
-      clearTimeout(t);
-      return (await r.json()).ip || "não obtido";
-    } catch (e) { return "não obtido"; }
-  }
+    // Percentual de presença
 
-  btn.addEventListener("click", async () => {
-    const d = DADOS[sel.value];
-    const agora = new Date();
-    const data = agora.toLocaleDateString("pt-BR");
-    const hora = agora.toLocaleTimeString("pt-BR");
-    const quando = data + " às " + hora;
-    const arquivo = decodeURIComponent(location.pathname.split("/").pop()) || "index.html";
-    btn.disabled = true;
-    if (URL_REGISTRO) {
-      try {
-        const ip = await obterIP();
-        await fetch(URL_REGISTRO, { method: "POST", mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ aluno: d.rotulo, data, hora, ip, concordou: true, arquivo, url: location.href.split("#")[0] }) });
-      } catch (e) {
-        msg.textContent = "Não foi possível registrar agora. Verifique a internet e tente de novo.";
-        msg.className = "erro"; atualizarBotao(); return;
-      }
-      msg.textContent = "Visualização registrada em " + quando + ".";
-      msg.className = "ok";
+    const tdPresenca = document.createElement("td");
+    tdPresenca.className = "presenca";
+
+    tdPresenca.textContent =
+      disciplina.presenca.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + "%";
+
+    tr.appendChild(tdPresenca);
+
+    // Situação da compensação
+
+    const tdSituacao = document.createElement("td");
+    tdSituacao.className = "situacao";
+
+    if (disciplina.compensacao === true) {
+
+      const a = document.createElement("a");
+
+      a.href = DISCIPLINAS[indiceDisciplina].pdf;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "compensacao";
+      a.textContent = "Compensação de Ausências";
+
+      tdSituacao.appendChild(a);
+
     } else {
-      msg.textContent = "Atenção: o registro ainda não foi configurado, esta visualização não foi gravada.";
-      msg.className = "erro";
+
+      const span = document.createElement("span");
+
+      span.className = "regular";
+      span.textContent = "Sem necessidade de compensação";
+
+      tdSituacao.appendChild(span);
+
     }
-    mostrar(d);
-    atualizarBotao();
+
+    tr.appendChild(tdSituacao);
+
   });
+
+  // Exibe somente o aluno selecionado
+
+  corpo.innerHTML = "";
+  corpo.appendChild(tr);
+
+  area.hidden = false;
+  vazio.hidden = true;
+
+  // Orientações para compensação de ausências
+
+  const divOrientacoes =
+    document.getElementById("orientacoesCompensacao");
+
+  const disciplinasComCompensacao = d.disciplinas
+    .map((disciplina, indice) => ({
+      disciplina,
+      indice
+    }))
+    .filter(item => item.disciplina.compensacao === true);
+
+  if (disciplinasComCompensacao.length > 0) {
+
+    divOrientacoes.innerHTML = `
+      ${disciplinasComCompensacao.map(item => {
+
+        const disciplina = DISCIPLINAS[item.indice];
+
+        return `
+          <div class="bloco-compensacao">
+
+            <h2>Compensação de Ausências - ${disciplina.nome}</h2>
+
+            <h3>Orientações</h3>
+
+            <ul>
+              <li>A atividade deverá ser realizada individualmente.</li>
+              <li>Leia atentamente cada questão antes de responder.</li>
+              <li>Nas questões de 1 a 7, assinale apenas uma alternativa. Preencha o gabarito ao final da prova a caneta.</li>
+              <li>Nas questões de 8 a 10, escreva respostas completas, utilizando os conceitos estudados.</li>
+              <li>A atividade deverá ser feita à mão e entregue pessoalmente ao professor.</li>
+              <li>Respostas dissertativas devem apresentar justificativas e demonstrar compreensão dos conteúdos.</li>
+            </ul>
+
+            <a
+              class="link-atividade"
+              href="${disciplina.pdf}"
+              target="_blank"
+              rel="noopener"
+            >
+              Abrir atividade de compensação - ${disciplina.nome}
+            </a>
+
+          </div>
+        `;
+
+      }).join("")}
+    `;
+
+  } else {
+
+    divOrientacoes.innerHTML = "";
+
+  }
+
+}
+
+// ======================================================
+// OBTENÇÃO DO IP
+// ======================================================
+
+async function obterIP() {
+
+  try {
+
+    const c = new AbortController();
+
+    const t = setTimeout(() => c.abort(), 4000);
+
+    const r = await fetch(
+      "https://api.ipify.org?format=json",
+      { signal: c.signal }
+    );
+
+    clearTimeout(t);
+
+    return (await r.json()).ip || "não obtido";
+
+  } catch (e) {
+
+    return "não obtido";
+
+  }
+
+}
+
+// ======================================================
+// BOTÃO VISUALIZAR
+// ======================================================
+
+btn.addEventListener("click", async () => {
+
+  const d = DADOS[Number(sel.value)];
+
+  if (!d) {
+    return;
+  }
+
+  const agora = new Date();
+
+  const data = agora.toLocaleDateString("pt-BR");
+  const hora = agora.toLocaleTimeString("pt-BR");
+  const quando = data + " às " + hora;
+
+  const arquivo =
+    decodeURIComponent(location.pathname.split("/").pop()) || "index.html";
+
+  btn.disabled = true;
+
+  if (URL_REGISTRO) {
+
+    try {
+
+      const ip = await obterIP();
+
+      await fetch(URL_REGISTRO, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+          aluno: d.rotulo,
+          data,
+          hora,
+          ip,
+          concordou: true,
+          arquivo,
+          url: location.href.split("#")[0]
+        })
+      });
+
+    } catch (e) {
+
+      msg.textContent =
+        "Não foi possível registrar agora. Verifique a internet e tente de novo.";
+
+      msg.className = "erro";
+
+      atualizarBotao();
+
+      return;
+
+    }
+
+    msg.textContent = "Visualização registrada em " + quando + ".";
+    msg.className = "ok";
+
+  } else {
+
+    msg.textContent =
+      "Atenção: o registro ainda não foi configurado, esta visualização não foi gravada.";
+
+    msg.className = "erro";
+
+  }
+
+  mostrar(d);
+
+  atualizarBotao();
+
+});
+
 </script>
 </body>
 </html>

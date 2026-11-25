@@ -17,7 +17,35 @@
   select:focus-visible { outline:3px solid #8fb0ee; outline-offset:2px; }
   .vazio { margin:24px 0; color:#566; }
   .rolagem { overflow-x:auto; margin-top:20px; }
-  table { border-collapse:collapse; width:100%; min-width:720px; background:#fff; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 1050px;
+    background: #fff;
+  }
+
+  td.presenca {
+    padding: 12px 8px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  td.situacao {
+    padding: 10px;
+    min-width: 210px;
+    font-weight: 700;
+  }
+
+  td.situacao a.compensacao {
+    color: var(--vermelho);
+    font-size: .95rem;
+    line-height: 1.3;
+  }
+
+  td.situacao .regular {
+    color: #1d6b32;
+    font-size: .9rem;
+  }
   th, td { border:1px solid var(--linha); text-align:center; padding:0; }
   thead th { background:var(--azul); color:#fff; font-weight:700; }
   thead tr:first-child th { padding:10px; font-size:1.05rem; }
@@ -49,6 +77,54 @@
   .linha-sel .ciente { display:flex; gap:10px; align-items:flex-start; font-weight:400; margin:0; cursor:pointer;
                        flex:1 1 260px; max-width:420px; }
   .linha-sel input[type=checkbox] { width:20px; height:20px; margin-top:2px; flex:none; }
+
+  #orientacoesCompensacao {
+    margin-top: 20px;
+  }
+
+  .bloco-compensacao {
+    background: #fff8e8;
+    border: 1px solid #e5c98b;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #333;
+    text-align: left;
+  }
+
+  .bloco-compensacao h2 {
+    margin-top: 0;
+    color: #163A5F;
+  }
+
+  .bloco-compensacao h3 {
+    margin-bottom: 10px;
+    color: #163A5F;
+  }
+
+  .bloco-compensacao ul {
+    padding-left: 22px;
+  }
+
+  .bloco-compensacao li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .bloco-compensacao .link-atividade {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 12px 18px;
+    background: #163A5F;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .bloco-compensacao .link-atividade:hover {
+    background: #2474A6;
+  }
 </style>
 </head>
 <body>
@@ -75,65 +151,76 @@
   </div>
   <p id="msg" role="status"></p>
   <p class="vazio" id="vazio">Escolha seu nome, marque a declaração e clique em Visualizar.</p>
-  <div class="rolagem" id="area" hidden>
-    <table>
-      <thead>
-        <tr>
-          <th rowspan="2">ALUNO</th>
-          <th colspan="3">Carreira e Competências para o Mercado de Trabalho em Administração</th>
-        </tr>
-        <tr id="cab2"></tr>
-      </thead>
-      <tbody id="corpo"></tbody>
-    </table>
-  </div>
+  <table>
+  <thead>
+    <tr>
+      <th rowspan="2">ALUNO</th>
+      <th colspan="3">Carreira e Competências para o Mercado de Trabalho em Administração</th>
+      <th rowspan="2">PRESENÇA</th>
+      <th rowspan="2">SITUAÇÃO</th>
+    </tr>
+    <tr id="cab2"></tr>
+  </thead>
+  <tbody id="corpo"></tbody>
+</table>
+<div id="orientacoesCompensacao"></div>
 </main>
 <script>
-  const LINKS = [
-    { nome: "Revisão Saresp",     url: "https://forms.cloud.microsoft/r/whmekSjLk1" },
-    { nome: "Atividades Remotas", url: "https://eduugomes.github.io/EcoVitta/" },
-    { nome: "Educação Profissional", url: "https://educacaoprofissional.educacao.sp.gov.br/" }
+const LINKS = [
+  { nome: "Revisão Saresp", url: "https://forms.cloud.microsoft/r/whmekSjLk1" },
+  { nome: "Atividades Remotas", url: "https://eduugomes.github.io/EcoVitta/" },
+  { nome: "Educação Profissional", url: "https://educacaoprofissional.educacao.sp.gov.br/" },
+  { nome: "Compensação de Ausências", url: "https://eduugomes.github.io/situacao/Compensacao_Ausencia_CC_2ABSC.pdf" }
+];
+
+// Cada aluno possui:
+// nome, status das três atividades, percentual de presença e necessidade de compensação.
+
+  const DADOS = [
+    { nome: "ANA BEATRIZ", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "ANA LUIZA", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "ARYELLA LEMOS", status: ["P", "P", "P"], presenca: 45.83, compensacao: true },
+    { nome: "EMILY LAUANY", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "FELIPE DOS SANTOS", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "FELIPE GABRIEL", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "FILIPE ESTEVAM", status: ["OK", "OK", "OK"], presenca: 70.83, compensacao: true },
+    { nome: "GUSTAVO SOUZA", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "HEITOR RANCAN", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "HELLEN REGINALDO", status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "INGRID DANIELE", status: ["OK", "OK", "P"], presenca: 100.00, compensacao: false },
+    { nome: "INGRIDY GUIMARAES", status: ["OK", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "JEAN LUKKA", status: ["P", "P", "P"], presenca: 95.83, compensacao: false },
+    { nome: "JOAO VICTOR", status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "JOEL JOAQUIM", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "KAUA MARIANO", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "KAYKY LUAN", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "KEVIN RODRIGO", status: ["P", "P", "P"], presenca: 91.67, compensacao: false },
+    { nome: "KEVYN VICTOR", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "LIVIA JANUARIO", status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "LORENA LIMA", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "LUCAS BRITTO", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "LUCAS DE OLIVEIRA", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "LUÍS RAFAEL", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "LUIZ FERNANDO", status: ["OK", "OK", "P"], presenca: 100.00, compensacao: false },
+    { nome: "MARIA EDUARDA", status: ["P", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "MATHEUS MONTAGNANA", status: ["OK", "P", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "MIRELLA STEPHAN", status: ["P", "P", "P"], presenca: 66.67, compensacao: true },
+    { nome: "NICHOLAS FERNANDES", status: ["OK", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "NICOLLE DA SILVA", status: ["OK", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "PABLO HENRIQUE", status: ["P", "P", "P"], presenca: 83.33, compensacao: false },
+    { nome: "PIETRO BARBIERI", status: ["OK", "P", "P"], presenca: 100.00, compensacao: false },
+    { nome: "QUEILA DE ALMEIDA", status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "RAFAELA LUIZA", status: ["P", "P", "P"], presenca: 54.17, compensacao: true },
+    { nome: "RICARDO HENRIQUE", status: ["OK", "OK", "OK"], presenca: 100.00, compensacao: false },
+    { nome: "RICHARD EDUARDO", status: ["P", "P", "P"], presenca: 95.83, compensacao: false },
+    { nome: "RYCHARD GABRYEL", status: ["P", "P", "P"], presenca: 95.83, compensacao: false },
+    { nome: "SARAH REBECA", status: ["P", "P", "P"], presenca: 54.17, compensacao: true },
+    { nome: "TIFANI NICOLI", status: ["P", "P", "P"], presenca: 66.67, compensacao: true },
+    { nome: "YASMIM GABRIELLE", status: ["OK", "OK", "P"], presenca: 100.00, compensacao: false },
+    { nome: "ZAQUEU HENRIQUE", status: ["P", "P", "P"], presenca: 79.17, compensacao: false }
   ];
 
-  // Cada linha: nome | 9 status (3 por disciplina: Revisão Saresp, Atividades Remotas, Educação Profissional)
-  // P = Pendente
-const DADOS = [
-  ["ANA BEATRIZ", "OK OK P"],
-  ["ANA CAROLINE", "OK OK OK"],
-  ["ANA JULIA", "OK OK P"],
-  ["ANA LUIZA", "OK P OK"],
-  ["CARLOS DANIEL", "OK OK P"],
-  ["ELOÁ NASCIMENTO", "OK OK OK"],
-  ["ESTER SAYURI", "P P P"],
-  ["EVELYN SOFIA", "OK P P"],
-  ["FLAVIA ALESSANDRA", "OK OK P"],
-  ["GABRIEL RUAN", "OK P P"],
-  ["GILEADE VICENTE", "OK P P"],
-  ["GIOVANNA SANTOS", "OK OK OK"],
-  ["HELOISA APARECIDA", "OK OK P"],
-  ["ISABELE CASTILHO", "OK P OK"],
-  ["JENIFFER YASMIN", "OK OK P"],
-  ["JOAO MIGUEL", "OK P P"],
-  ["JÚLIA ARAUJO", "OK P P"],
-  ["JULLYA BEATRIZ", "OK OK OK"],
-  ["KAWANNY YNGRID", "OK OK OK"],
-  ["LAIZE MARIAH", "P P P"],
-  ["LARISSA HELENA", "OK OK P"],
-  ["MARIA E FERNANDES", "OK OK P"],
-  ["MARIA E GONÇALVES", "OK P P"],
-  ["MARIA LUIZA", "OK P P"],
-  ["MILENA APARECIDA", "OK P P"],
-  ["MILLENA RAMOS", "OK P P"],
-  ["MIQUÉIAS VICTOR", "OK P P"],
-  ["NARRIMAN JULIANE", "OK OK P"],
-  ["NATHALIA GARCIA", "OK OK OK"],
-  ["NICOLLY FERREIRA", "OK OK P"],
-  ["PEDRO JUAREZ", "P P P"],
-  ["PIETRO RIBEIRO", "P P P"],
-  ["RYAN AUGUSTO", "P P P"],
-  ["VINICIUS CATELANO", "OK P OK"],
-  ["YURI OLIVEIRA", "OK P P"]
-].map(([nome, s]) => ({ nome, status: s.trim().split(/\s+/) }));
+
 
   // Nomes repetidos recebem numeração para que cada linha possa ser escolhida
   const contagem = {};
@@ -145,13 +232,20 @@ const DADOS = [
   });
 
   const sel = document.getElementById("aluno");
-  DADOS.forEach((d, i) => sel.add(new Option(d.rotulo, i)));
+
+  DADOS.forEach((d, i) => {
+    sel.add(new Option(d.nome, i));
+  });
 
   // Cabeçalho da 2ª linha com links
+  // Cabeçalho da 2ª linha com links das três atividades
   const cab2 = document.getElementById("cab2");
-  for (let g = 0; g < 1; g++) LINKS.forEach(l => {
+
+  LINKS.slice(0, 3).forEach(l => {
     const th = document.createElement("th");
+
     th.innerHTML = `<a href="${l.url}" target="_blank" rel="noopener">${l.nome}</a>`;
+
     cab2.appendChild(th);
   });
 
@@ -168,8 +262,11 @@ const DADOS = [
   const msg = document.getElementById("msg");
 
   function resetar() {
-    corpo.innerHTML = ""; area.hidden = true; vazio.hidden = false;
-    msg.textContent = ""; msg.className = "";
+    corpo.innerHTML = "";
+    vazio.hidden = false;
+    document.getElementById("orientacoesCompensacao").innerHTML = "";
+    msg.textContent = "";
+    msg.className = "";
   }
   function atualizarBotao() { btn.disabled = !(sel.value !== "" && ciente.checked); }
 
@@ -181,14 +278,118 @@ const DADOS = [
 
   function mostrar(d) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td class="nome">${d.nome}</td>`;
+
+    // Nome do aluno
+    const tdNome = document.createElement("td");
+    tdNome.className = "nome";
+    tdNome.textContent = d.nome;
+    tr.appendChild(tdNome);
+
+    // Status das três atividades
     d.status.forEach((s, i) => {
+      const td = document.createElement("td");
+      const a = document.createElement("a");
+
       const ruim = s === "P" || s === "OK-";
       const txt = s === "P" ? "Pendente" : s;
-      tr.innerHTML += `<td><a href="${LINKS[i % 3].url}" target="_blank" rel="noopener" class="${ruim ? "ruim" : ""}">${txt}</a></td>`;
+
+      a.href = LINKS[i].url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = ruim ? "ruim" : "";
+      a.textContent = txt;
+
+      td.appendChild(a);
+      tr.appendChild(td);
     });
-    corpo.innerHTML = ""; corpo.appendChild(tr);
-    area.hidden = false; vazio.hidden = true;
+
+    // Percentual de presença
+    const tdPresenca = document.createElement("td");
+    tdPresenca.className = "presenca";
+
+    tdPresenca.textContent =
+      d.presenca.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + "%";
+
+    tr.appendChild(tdPresenca);
+
+    // Situação da compensação de ausências
+    const tdSituacao = document.createElement("td");
+    tdSituacao.className = "situacao";
+
+    if (d.compensacao === true) {
+      const linkCompensacao = LINKS.find(
+        l => l.nome === "Compensação de Ausências"
+      );
+
+      const a = document.createElement("a");
+
+      a.href = linkCompensacao.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "compensacao";
+      a.textContent = "Compensação de Ausências";
+
+      tdSituacao.appendChild(a);
+    } else {
+      const span = document.createElement("span");
+
+      span.className = "regular";
+      span.textContent = "Sem necessidade de compensação";
+
+      tdSituacao.appendChild(span);
+    }
+
+    tr.appendChild(tdSituacao);
+
+    // Exibe somente o aluno selecionado
+    corpo.innerHTML = "";
+    corpo.appendChild(tr);
+
+    vazio.hidden = true;
+
+    // Orientações para compensação de ausências
+    const divOrientacoes = document.getElementById("orientacoesCompensacao");
+
+    if (d.compensacao === true) {
+
+      const linkCompensacao = LINKS.find(
+        l => l.nome === "Compensação de Ausências"
+      );
+
+      divOrientacoes.innerHTML = `
+        <div class="bloco-compensacao">
+          <h2>Atividade para Compensação de Ausências</h2>
+
+          <h3>Orientações</h3>
+
+          <ul>
+            <li>A atividade deverá ser realizada individualmente.</li>
+            <li>Leia atentamente cada questão antes de responder.</li>
+            <li>Nas questões de 1 a 7, assinale apenas uma alternativa. Preencha o Gabarito ao final da prova a caneta.</li>
+            <li>Nas questões de 8 a 10, escreva respostas completas, utilizando os conceitos estudados.</li>
+            <li>A atividade deverá ser feita à mão e entregue pessoalmente ao professor.</li>
+            <li>Respostas dissertativas devem apresentar justificativas e demonstrar compreensão dos conteúdos.</li>
+          </ul>
+
+          ${
+            linkCompensacao
+              ? `<a class="link-atividade" href="${linkCompensacao.url}" target="_blank" rel="noopener">
+                  Abrir atividade para compensação
+                </a>`
+              : `<p>Link da atividade indisponível.</p>`
+          }
+
+        </div>
+      `;
+
+    } else {
+
+      divOrientacoes.innerHTML = "";
+
+    }
   }
 
   async function obterIP() {
